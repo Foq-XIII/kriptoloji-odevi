@@ -1,0 +1,199 @@
+@page
+@model HashModel
+@{
+    ViewData["Title"] = "Hash İşlemleri";
+}
+
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-4xl font-bold text-center mb-8 text-gradient">Hash İşlemleri</h1>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="mb-4 p-2 bg-red-900 text-red-300 rounded">@Model.ErrorMessage</div>
+    }
+
+    <div class="max-w-3xl mx-auto">
+        <form method="post" enctype="multipart/form-data">
+            <div class="card">
+                <div class="space-y-6">
+                    <!-- Algoritma Seçimi -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Hash Algoritması</label>
+                        <select name="Algorithm" class="w-full bg-gray-900 border border-purple-500 rounded p-2 text-white">
+                            @if (Model.Algorithm == "SHA1")
+                            {
+                                <option value="SHA1" selected>SHA-1 (⚠️ Güvenli değil)</option>
+                            }
+                            else
+                            {
+                                <option value="SHA1">SHA-1 (⚠️ Güvenli değil)</option>
+                            }
+                            @if (Model.Algorithm == "SHA256")
+                            {
+                                <option value="SHA256" selected>SHA-256 (Önerilen)</option>
+                            }
+                            else
+                            {
+                                <option value="SHA256">SHA-256 (Önerilen)</option>
+                            }
+                            @if (Model.Algorithm == "SHA384")
+                            {
+                                <option value="SHA384" selected>SHA-384</option>
+                            }
+                            else
+                            {
+                                <option value="SHA384">SHA-384</option>
+                            }
+                            @if (Model.Algorithm == "SHA512")
+                            {
+                                <option value="SHA512" selected>SHA-512</option>
+                            }
+                            else
+                            {
+                                <option value="SHA512">SHA-512</option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Metin Girişi -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Metin</label>
+                        <div class="relative">
+                            <textarea name="InputText" class="w-full h-32 bg-gray-900 border border-purple-500 rounded p-2 text-white pr-20" placeholder="Hash'lenecek metni girin...">@Model.InputText</textarea>
+                            <div class="absolute bottom-2 right-2 flex flex-row items-end space-x-2">
+                                <button type="button" class="paste-btn p-2 text-gray-400 hover:text-purple-400 bg-transparent" title="Yapıştır">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dosya Yükleme -->
+                    <div class="border-2 border-dashed border-purple-500 rounded-lg p-6 text-center" id="drop-zone">
+                        <div class="space-y-2">
+                            <svg class="mx-auto h-12 w-12 text-purple-500" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <div class="text-sm text-gray-400" id="drop-zone-label">
+                                <span>Dosyanızı buraya sürükleyip bırakın</span>
+                            </div>
+                            <p class="text-xs text-gray-500">PNG, JPG, PDF, TXT (max. 10MB)</p>
+                        </div>
+                    </div>
+
+                    <!-- Çıktı Formatı -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Çıktı Formatı</label>
+                        <div class="flex space-x-4">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="OutputFormat" value="hex" class="form-radio text-purple-500" @(Model.OutputFormat == "hex" ? "checked" : null)>
+                                <span class="ml-2 text-gray-300">Hexadecimal</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="OutputFormat" value="base64" class="form-radio text-purple-500" @(Model.OutputFormat == "base64" ? "checked" : null)>
+                                <span class="ml-2 text-gray-300">Base64</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Hash Butonu -->
+                    <button type="submit" class="w-full btn-primary">Hash Oluştur</button>
+
+                    <!-- Sonuç -->
+                    <div class="mt-6">
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Hash Sonucu</label>
+                        <div class="relative">
+                            <textarea class="w-full h-32 bg-gray-900 border border-purple-500 rounded p-2 text-white font-mono" readonly>@Model.HashResult</textarea>
+                            <div class="absolute bottom-2 right-2 flex flex-row items-end space-x-2">
+                                <button type="button" class="p-2 text-gray-400 hover:text-purple-400 transition-colors bg-transparent" title="Kopyala">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                    </svg>
+                                </button>
+                                <button type="button" class="p-2 text-gray-400 hover:text-purple-400 transition-colors bg-transparent" title="İndir">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="mt-2 text-sm text-gray-400">Hash Uzunluğu: <span class="text-purple-400">@Model.HashLength karakter</span></p>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    document.querySelectorAll('.paste-btn').forEach(function(btn) {
+        btn.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+        btn.onclick = function() {
+            var container = btn.closest('.relative');
+            var input = container ? container.querySelector('textarea, input') : null;
+            if (input) {
+                navigator.clipboard.readText().then(function(text) {
+                    input.value = text;
+                });
+            }
+        };
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const dropZone = document.getElementById('drop-zone');
+        const dropZoneLabel = document.getElementById('drop-zone-label');
+        const form = dropZone ? dropZone.closest('form') : null;
+
+        if (dropZone) {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }, false);
+            });
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, function(e) {
+                    dropZone.classList.add('border-purple-400');
+                }, false);
+            });
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, function(e) {
+                    dropZone.classList.remove('border-purple-400');
+                }, false);
+            });
+            dropZone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                if (files.length > 0) {
+                    // Dosya adını kutunun içinde göster
+                    if (dropZoneLabel) {
+                        dropZoneLabel.innerHTML = '<span class="text-purple-400">' + files[0].name + '</span>';
+                    }
+                    // Geçici bir input oluşturup dosyayı ekle ve formu submit et
+                    if (form) {
+                        // Eski varsa kaldır
+                        let tempInput = document.getElementById('temp-upload');
+                        if (tempInput) tempInput.remove();
+                        tempInput = document.createElement('input');
+                        tempInput.type = 'file';
+                        tempInput.name = 'InputFile';
+                        tempInput.id = 'temp-upload';
+                        tempInput.style.display = 'none';
+                        form.appendChild(tempInput);
+                        // FileList'i inputa ekle (hack: DataTransfer ile)
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(files[0]);
+                        tempInput.files = dataTransfer.files;
+                        form.submit();
+                    }
+                }
+            }, false);
+        }
+    });
+</script>
+} 

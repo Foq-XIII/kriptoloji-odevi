@@ -1,0 +1,172 @@
+@page
+@model KeyGeneratorModel
+@{
+    ViewData["Title"] = "Anahtar Üretici";
+}
+
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-4xl font-bold text-center mb-8 text-gradient">Anahtar Üretici</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- AES Anahtar Üretici -->
+        <form method="post" asp-page-handler="AES" class="card">
+            <!-- RSA state'ini korumak için hidden inputlar (formun en başında) -->
+            <input type="hidden" name="RSAKeySize" value="@Model.RSAKeySize" />
+            <input type="hidden" name="RSAPublicKey" value="@Model.RSAPublicKey" />
+            <input type="hidden" name="RSAPrivateKey" value="@Model.RSAPrivateKey" />
+            <h2 class="text-2xl font-semibold mb-4 text-green-400">AES Anahtar Üretici</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Anahtar Boyutu</label>
+                    <select name="AESKeySize" class="w-full bg-gray-900 border border-purple-500 rounded p-2 text-white">
+                        @foreach (var size in new[] {128, 256})
+                        {
+                            if (Model.AESKeySize == size)
+                            {
+                                <option value="@size" selected>@size-bit</option>
+                            }
+                            else
+                            {
+                                <option value="@size">@size-bit</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Anahtar</label>
+                    <div class="relative">
+                        <input name="AESKey" type="text" class="w-full bg-gray-900 border border-purple-500 rounded p-2 text-white font-mono" value="@Model.AESKey" readonly />
+                        <div class="absolute inset-y-0 right-2 flex flex-row items-center space-x-2">
+                            <button type="button" class="p-2 text-gray-400 hover:text-purple-400 transition-colors bg-transparent" title="Kopyala">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                </svg>
+                            </button>
+                            <button type="button" class="p-2 text-gray-400 hover:text-purple-400 transition-colors bg-transparent" title="İndir">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">IV (Initialization Vector)</label>
+                    <div class="relative">
+                        <input name="AESIV" type="text" class="w-full bg-gray-900 border border-purple-500 rounded p-2 text-white font-mono" value="@Model.AESIV" readonly />
+                        <div class="absolute inset-y-0 right-2 flex flex-row items-center space-x-2">
+                            <button type="button" class="p-2 text-gray-400 hover:text-purple-400 transition-colors bg-transparent" title="Kopyala">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                </svg>
+                            </button>
+                            <button type="button" class="p-2 text-gray-400 hover:text-purple-400 transition-colors bg-transparent" title="İndir">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="w-full btn-primary">Yeni Anahtar ve IV Oluştur</button>
+            </div>
+        </form>
+
+        <!-- RSA Anahtar Üretici -->
+        <form method="post" asp-page-handler="RSA" class="card">
+            <!-- AES state'ini korumak için hidden inputlar (formun en başında) -->
+            <input type="hidden" name="AESKeySize" value="@Model.AESKeySize" />
+            <input type="hidden" name="AESKey" value="@Model.AESKey" />
+            <input type="hidden" name="AESIV" value="@Model.AESIV" />
+            <h2 class="text-2xl font-semibold mb-4 text-fuchsia-400">RSA Anahtar Üretici</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Anahtar Uzunluğu</label>
+                    <select name="RSAKeySize" class="w-full bg-gray-900 border border-purple-500 rounded p-2 text-white">
+                        @foreach (var size in new[] {2048, 4096})
+                        {
+                            if (Model.RSAKeySize == size)
+                            {
+                                <option value="@size" selected>@size-bit (@(size == 2048 ? "Standart" : "Yüksek güvenlik"))</option>
+                            }
+                            else
+                            {
+                                <option value="@size">@size-bit (@(size == 2048 ? "Standart" : "Yüksek güvenlik"))</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Public Key</label>
+                    <div class="relative">
+                        <textarea name="RSAPublicKey" class="w-full h-32 bg-gray-900 border border-purple-500 rounded p-2 text-white font-mono" readonly>@Model.RSAPublicKey</textarea>
+                        <div class="absolute bottom-2 right-2 flex flex-row items-end space-x-2">
+                            <button type="button" class="p-2 text-gray-400 hover:text-purple-400 transition-colors bg-transparent" title="Kopyala">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                </svg>
+                            </button>
+                            <button type="button" class="p-2 text-gray-400 hover:text-purple-400 transition-colors bg-transparent" title="İndir">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Private Key</label>
+                    <div class="relative">
+                        <textarea name="RSAPrivateKey" class="w-full h-32 bg-gray-900 border border-purple-500 rounded p-2 text-white font-mono" readonly>@Model.RSAPrivateKey</textarea>
+                        <div class="absolute bottom-2 right-2 flex flex-row items-end space-x-2">
+                            <button type="button" class="p-2 text-gray-400 hover:text-purple-400 transition-colors bg-transparent" title="Kopyala">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                </svg>
+                            </button>
+                            <button type="button" class="p-2 text-gray-400 hover:text-purple-400 transition-colors bg-transparent" title="İndir">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="w-full btn-primary">Yeni RSA Anahtarları Oluştur</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    // Kopyala butonları
+    document.querySelectorAll('.copy-btn-bg button[title="Kopyala"]').forEach(function(btn) {
+        btn.onclick = function() {
+            var input = btn.closest('.relative').querySelector('input,textarea');
+            if (input) {
+                navigator.clipboard.writeText(input.value);
+            }
+        };
+    });
+    // İndir butonları
+    document.querySelectorAll('.copy-btn-bg button[title="İndir"]').forEach(function(btn) {
+        btn.onclick = function() {
+            var input = btn.closest('.relative').querySelector('input,textarea');
+            if (input) {
+                var blob = new Blob([input.value], {type: 'text/plain'});
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = (input.name || 'key') + '.txt';
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(function() {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 100);
+            }
+        };
+    });
+</script>
+} 

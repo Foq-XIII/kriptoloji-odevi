@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Kriptoloji Araçları</title>
+    <link rel="icon" type="image/svg+xml" href="~/images/favicon.svg" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cyber-purple': '#9d4edd',
+                        'cyber-green': '#4cc9f0',
+                        'cyber-fuchsia': '#f72585',
+                        'neon-yellow': '#fff700',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-black text-white">
+    <header class="bg-gray-900 border-b border-purple-500">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <a href="/" class="text-2xl font-bold text-purple-500 hover:text-purple-400 transition-colors">
+                    Kriptoloji Araçları
+                </a>
+                <div class="space-x-4">
+                    <a href="/Encryption" class="text-neon-yellow hover:text-purple-400 transition-colors no-underline hover:no-underline">Şifreleme</a>
+                    <a href="/Hash" class="text-neon-yellow hover:text-green-400 transition-colors no-underline hover:no-underline">Hash</a>
+                    <a href="/KeyGenerator" class="text-neon-yellow hover:text-fuchsia-400 transition-colors no-underline hover:no-underline">Anahtar Üretici</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer class="bg-gray-900 border-t border-purple-500 mt-8">
+        <div class="container mx-auto px-4 py-6 text-center text-gray-400">
+            <p>&copy; 2025 - Kriptoloji Araçları</p>
+        </div>
+    </footer>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

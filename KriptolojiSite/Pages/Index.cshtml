@@ -1,0 +1,40 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Kriptoloji Araçları";
+}
+
+<div class="min-h-screen bg-black text-white">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold text-center mb-8 text-purple-500">Kriptoloji Araçları</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Şifreleme Kartı -->
+            <div class="bg-gray-900 rounded-lg p-6 border border-purple-500 shadow-lg hover:shadow-purple-500/50 transition-all">
+                <h2 class="text-2xl font-semibold mb-4 text-blue-800">Şifreleme / Deşifreleme</h2>
+                <p class="text-gray-400 mb-4">AES ve RSA algoritmaları ile güvenli şifreleme işlemleri yapın.</p>
+                <a href="/Encryption" class="inline-block bg-blue-800 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded transition-colors">
+                    Şifreleme Araçları
+                </a>
+            </div>
+
+            <!-- Hash Kartı -->
+            <div class="bg-gray-900 rounded-lg p-6 border border-purple-500 shadow-lg hover:shadow-purple-500/50 transition-all">
+                <h2 class="text-2xl font-semibold mb-4 text-blue-800">Hash İşlemleri</h2>
+                <p class="text-gray-400 mb-4">SHA algoritmaları ile dosya ve metin özetleri oluşturun.</p>
+                <a href="/Hash" class="inline-block bg-blue-800 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded transition-colors">
+                    Hash Araçları
+                </a>
+            </div>
+
+            <!-- Anahtar Üretici Kartı -->
+            <div class="bg-gray-900 rounded-lg p-6 border border-purple-500 shadow-lg hover:shadow-purple-500/50 transition-all">
+                <h2 class="text-2xl font-semibold mb-4 text-blue-800">Anahtar Üretici</h2>
+                <p class="text-gray-400 mb-4">AES ve RSA için güvenli anahtarlar oluşturun.</p>
+                <a href="/KeyGenerator" class="inline-block bg-blue-800 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded transition-colors">
+                    Anahtar Üretici
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
